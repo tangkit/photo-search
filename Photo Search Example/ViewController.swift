@@ -13,16 +13,19 @@ class ViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     
     override func viewDidLoad() {
-        let manager = AFHTTPSessionManager()
         super.viewDidLoad()
+        searchFlickrByHashtag("dogs")
+        // Do any additional setup after loading the view, typically from a nib.
+    }
+    func searchFlickrByHashtag(searchString:String){
+        let manager = AFHTTPSessionManager()
         let searchParameters = ["method": "flickr.photos.search",
                                 "api_key": "58a7e16367b1babeb646fb4ff9eabcac",
                                 "format": "json",
                                 "nojsoncallback": 1,
-                                "text": "dogs",
+                                "text": searchString,
                                 "extras": "url_m",
                                 "per_page": 5]
-        
         manager.GET("https://api.flickr.com/services/rest/",
                     parameters: searchParameters,
                     progress: nil,
@@ -48,15 +51,16 @@ class ViewController: UIViewController, UISearchBarDelegate {
                     failure: { (operation: NSURLSessionDataTask?,error: NSError) in
                         print("Error: " + error.localizedDescription)
         })
-        
-        // Do any additional setup after loading the view, typically from a nib.
     }
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         for subview in self.scrollView.subviews {
             subview.removeFromSuperview()
         }
         searchBar.resignFirstResponder()
+        searchFlickrByHashtag(searchBar.text!)
     }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
